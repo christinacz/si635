@@ -1,7 +1,6 @@
 <?php
 
-// submitting to twitter is pretty easy
-// access callbacks can do strange things
+//week 7 hw - tweet to @si635 using helper_tweet
 
 function SDLtwitter_menu() {
     $items = array();
