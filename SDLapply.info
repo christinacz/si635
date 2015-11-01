@@ -1,0 +1,4 @@
+name=SDLapply
+description="This module is a form for students to use to apply to be an SDL consultant."
+core=7.x
+package=635

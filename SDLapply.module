@@ -1,0 +1,232 @@
+<?php
+// initiate SDLapply module: 3 forms for 635 Week 7 HW
+
+function SDLapply_menu() {
+    $items = array();
+// /apply goes to application form AKA SDLapply_form_start -> SDLapply_who_form
+    $items['apply'] = array(
+        'title' => 'Apply to be an SDL Student Consultant',
+        'page callback' => 'SDLapply_form_start',
+        'access callback' => TRUE,
+    );
+
+// /contact-us goes to contact form AKA week6_info_form
+    $items['contact-us'] = array(
+        'title' => 'Contact Us',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('SDLcontact_info_form'),
+        'access callback' => TRUE,
+    );
+/contest goes to contest form AKA SDLcontest_form_ 
+      $items['contest'] = array(
+        'title' => 'Name the Shapiro Design Lab Lab',
+        'page callback' => 'SDLcontest_form_start',
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+
+// Calls the application form
+
+function SDLapply_form_start() {
+    return drupal_get_form('SDLapply_who_form');
+}
+
+// Application form starts
+function SDLapply_who_form($form_state) {
+    $form = array();
+// Name    
+    $form['name'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your Full Name'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );
+// Email
+      $form['email'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your email'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );    
+// Bio        
+    $form['bio'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Please provide a short bio, with your areas of strength and areas that you would like to grow or explore.'),
+    );
+ // Graduation year   
+    $form['gradyear'] = array(
+        '#type'=>'textfield',
+        '#title' => t('What year will you graduate??'),
+        '#required' => TRUE
+    );
+    $gradyear = array();
+    $gradyear['2015'] = t('2015');
+    $gradyear['2016'] = t('2016');
+    $gradyear['2017'] = t('2016');
+    $gradyear['2018'] = t('2018');
+    $gradyear['other'] = t('Other');
+    $form['gradyear'] = array(
+        '#type'=>'select',
+        '#options' => $gradyear,
+        '#required' => TRUE
+    );
+// Resume upload    
+    $form['resume'] = array(
+    '#type' => 'file',
+    '#title' => t('Please upload your resume as a PDF.'),
+    );
+// Submit button
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'submit',
+    );
+    return $form;
+}
+// Validate the application form
+function SDLapply_who_form_validate($form,$form_state) {
+    $email = $form_state['values']['email'];
+    if (!valid_email_address($email)) {
+        form_set_error('email',t('Please provide a valid email (e.g. name@gmail.com)'));
+    }
+}
+// Submit the application form
+function SDLapply_who_form_submit($form,$form_state) {
+    $name = $form_state['values']['name'];
+    drupal_set_message(t('Thanks @name !',array('@name'=>$name)));
+}
+
+// Contact us form
+function SDLcontact_info_form($form_state) {
+    $form = array();
+// name
+    $form['name'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your Name'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );
+// email
+      $form['email'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your email'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );    
+// Comment 
+    $form['comment'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Your question/comment:'),
+        '#required' => TRUE,
+    );
+// Category
+    $form['category'] = array(
+        '#type'=>'radios',
+        '#title' => t('Category of your question/comment (optional)'),
+        '#required' => FALSE
+    );
+    $category = array();
+    $category['consultation'] = t('Consultation request');
+    $category['tech'] = t('Technology troubleshoot');
+    $category['general'] = t('General Interest');
+    $category['feedback'] = t('Feedback');
+    $category['emergency'] = t('EMERGENCY');
+    $category['other'] = t('Other');
+    $form['category'] = array(
+        '#type'=>'select',
+        '#title' => t('Category of your question/comment (optional)'),
+        '#options' => $category,
+        '#required' => TRUE
+    );
+
+// Submit Contact form
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'submit',
+    );
+    return $form;
+}
+
+// Validates the SDL contact form for emergency questions
+function SDLcontact_info_form_validate($form, $form_state) {
+//     // $email = $form_state['values']['email'];
+//     // if (!valid_email_address($email)) {
+//     //     form_set_error('email',t('Please provide a valid email (e.g. name@gmail.com)'));
+    if ($form_state['values']['category'] == 'emergency') {
+        form_set_error('category', t('If you are in need of immediate assistance, please go to the Shapiro Library circulation desk - next to Burts Cafe'));
+        }
+}
+
+// Submits the SDL contact form
+function SDLcontact_info_form_submit($form,$form_state) {
+    $name = $form_state['values']['name'];
+    drupal_set_message(t('Thanks @name ! We will get back with you shortly.',array('@name'=>$name)));
+}
+
+// Calls the Contest Form
+function SDLcontest_form_start() {
+    return drupal_get_form('SDLcontest_who_form');
+}
+
+function SDLcontest_who_form($form_state) {
+    $form = array();
+// Entry name    
+    $form['entry'] = array(
+        '#type' => 'textfield',
+        '#title' => t('What should we name the Shapiro Design Lab mascot?'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );
+// Submitter name
+    $form['name'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your Full Name'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );
+// Email
+      $form['email'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your email'),
+        '#size' => 100,
+        '#required' => TRUE,
+    );    
+// Image upload    
+    $form['image'] = array(
+    '#type' => 'file',
+    '#title' => t('OPTIONAL (for special consideration): Upload your creative interpretation of the SDL logo design, incorporating the Design Lab lab'),
+    );
+
+// Graduation year   
+    $form['gradyear'] = array();
+     $gradyear = array();
+        $gradyear['2015'] = t('2015');
+        $gradyear['2016'] = t('2016');
+        $gradyear['2017'] = t('2016');
+        $gradyear['2018'] = t('2018');
+        $gradyear['other'] = t('Other');
+        $form['gradyear'] = array(
+            '#type'=>'select',
+            '#title' => t('What year will you graduate?'),
+            '#options' => $gradyear,
+            '#required' => TRUE
+    );
+
+// Submit button
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'submit',
+    );
+    return $form;
+}
+// Validate the application form
+function SDLcontest_who_form_validate($form,$form_state) {
+  if ($form_state['values']['entry'] == 'Lab') {
+        form_set_error('entry', t('Lame! Try again!'));
+    }
+}
+// Submit the application form
+function SDLcontest_who_form_submit($form,$form_state) {
+    $name = $form_state['values']['name'];
+    drupal_set_message(t('Thanks @name !',array('@name'=>$name)));
+}
