@@ -1,0 +1,158 @@
+<?php
+
+// submitting to twitter is pretty easy
+// access callbacks can do strange things
+
+function SDLtwitter_menu() {
+    $items = array();
+
+    $items['tweet-photos'] = array(
+    'title' => 'Photos from the SDL',
+    'page callback' => 'photo_form_start',
+    'access callback' => TRUE,
+);
+
+    $items['tweet'] = array(
+    'title' => 'Tweets from the SDL',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('SDL_intern_form'),
+    'access callback' => TRUE,
+);
+
+return $items;
+}
+
+function SDL_intern_form($form_state) {
+    $form = array();
+    $form['name'] = array(
+        '#type' => 'textfield',
+        '#title' =>t('Who is in the Shapiro Design Lab today?'),
+        '#required' => true,
+        );
+
+    $form['project'] = array(
+        '#type' => 'textfield',
+        '#title' =>t('I am working on:'),
+        '#required' => true,
+        );
+    
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'submit',
+    );
+    return $form;
+}
+
+// function SDL_project_form (){
+//     return "SDL Project Form";
+// }
+
+// implements weather module
+// function tweet_cool() {
+//     $temp = si635_helper_tweet('KARB'));
+//     if ($temp > 80) {
+//     return false;
+//     } else {
+//     return true; 
+//     }
+// }
+
+// form asking what intern is in the lab
+// function SDL_intern_form($form_state) {
+//     $form = array();
+    // $intern = array();
+    // $intern['ruth'] = t('Ruth');
+    // $intern['lula'] = t('Lula');
+    // $intern['yi'] = t('Yi');
+    // $intern['christina'] = t('Christina');
+    // $form['intern'] = array(
+    //     '#type'=>'select',
+    //     '#options' => $intern,
+    //     '#title' => t('Who is in the lab today?'),
+    //     '#required' => TRUE
+    // );
+//     $form['name'] = array(
+//         '#type' => 'textfield',
+//         '#title' =>t('Who is in the Shapiro Design Lab today?'),
+//         );
+
+//     $form['project'] = array(
+//         '#type' => 'textfield',
+//         '#title' =>t('I am working on:'),
+//         );
+    
+
+//     $form['submit'] = array(
+//         '#type' => 'submit',
+//         '#value' => 'submit',
+//     );
+//     return $form;
+// }
+
+function SDL_intern_form_validate($form, $form_state) {
+    dpm($form_state['values']);
+    }
+
+function SDL_intern_form_submit($form, $form_state) {
+    $name = $form_state['values']['name'];
+    $project = $form_state['values']['project'];
+    $text = t("@name is in the SDL now, working on @project", array(
+        '@name'=>$name, 
+        '@project'=>$project
+        ));
+    // Sets a message to display to the user
+    drupal_set_message($text);
+    // sends form results to si635 twitter
+    si635_helper_tweet($text);
+}
+
+// Twitter photo form
+function photo_form_start() {
+    return drupal_get_form('tweet_photo_form');
+}
+function tweet_photo_form($form_state) {
+    $form = array();
+    $form['image'] = array(
+        '#type' => 'file',
+        '#title' => t('Upload a screenshot of your project or an SDL selfie:'),
+        '#required' => TRUE,
+    );
+
+    $form['description'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Add a 120-character or less description'),
+        '#size' => 140,
+    );
+    $form['handle'] = array(
+        '#type'=>'textfield',
+        '#size'=> 20,
+        '#title' => t('Your Twitter Handle/Username'),
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'submit',
+    );
+    return $form;
+}
+
+function tweet_photo_form_validate($form, $form_state) {
+    dpm($form_state['values']);
+    }
+
+function tweet_photo_form_submit($form, $form_state) {
+    $image = $form_state['values']['image'];
+    $description = $form_state['values']['description'];
+    $handle = $form_state['values']['handle'];
+    $text = t("@image @description -@handle", array(
+        '@image'=>$image, 
+        '@description'=>$description,
+        '@handle' => $handle,
+        ));
+    // Sets a message to display to the user
+    drupal_set_message($text);
+    // sends form results to si635 twitter
+    si635_helper_tweet($text);
+}
+
