@@ -1,0 +1,4 @@
+name=twitter
+core=7.x
+description="Module to publish form results to SI635 twitter"
+package = 635
