@@ -2,7 +2,7 @@
 
 //week 7 hw - tweet to @si635 using helper_tweet
 
-function SDLtwitter_menu() {
+function twitter_menu() {
     $items = array();
 
     $items['tweet-photos'] = array(
@@ -89,9 +89,9 @@ function SDL_intern_form($form_state) {
 //     return $form;
 // }
 
-function SDL_intern_form_validate($form, $form_state) {
-    dpm($form_state['values']);
-    }
+// function SDL_intern_form_validate($form, $form_state) {
+//     dpm($form_state['values']);
+//     }
 
 function SDL_intern_form_submit($form, $form_state) {
     $name = $form_state['values']['name'];
