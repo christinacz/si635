@@ -1,6 +1,9 @@
 <?php
 
 //week 7 hw - tweet to @si635 using helper_tweet
+/**
+*Implements hook_menu
+*/
 
 function twitter_menu() {
     $items = array();
@@ -8,18 +11,26 @@ function twitter_menu() {
     $items['tweet-photos'] = array(
     'title' => 'Photos from the SDL',
     'page callback' => 'photo_form_start',
-    'access callback' => TRUE,
+    // 'access callback' => TRUE,
+    'access arguments' => array('access twitter content'),
+    'type' => MENU_NORMAL_ITEM,
 );
 
     $items['tweet'] = array(
     'title' => 'Tweets from the SDL',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('SDL_intern_form'),
-    'access callback' => TRUE,
+    // 'access callback' => TRUE,
+    'access arguments' => array('access twitter content'),
+    'type' => MENU_NORMAL_ITEM,
 );
 
 return $items;
 }
+
+/**
+*Implements twitter form
+*/
 
 function SDL_intern_form($form_state) {
     $form = array();
@@ -42,6 +53,23 @@ function SDL_intern_form($form_state) {
     );
     return $form;
 }
+
+/**
+*Implements hook_permission
+*/
+
+function twitter_permission(){
+    return array(
+        'access Twitter content'=> array(
+            'title' => t('Access content for the Twitter module'),
+            'description' => t('Access the form for the Twitter Module.'),
+            ),
+        );
+}
+
+/**
+*Implements hook_menu
+*/
 
 // function SDL_project_form (){
 //     return "SDL Project Form";
@@ -93,6 +121,10 @@ function SDL_intern_form($form_state) {
 //     dpm($form_state['values']);
 //     }
 
+/**
+*Implements form submit
+*/
+
 function SDL_intern_form_submit($form, $form_state) {
     $name = $form_state['values']['name'];
     $project = $form_state['values']['project'];
@@ -106,10 +138,14 @@ function SDL_intern_form_submit($form, $form_state) {
     si635_helper_tweet($text);
 }
 
-// Twitter photo form
+/**
+*Implements tweet photo form start
+*/
+
 function photo_form_start() {
     return drupal_get_form('tweet_photo_form');
 }
+
 function tweet_photo_form($form_state) {
     $form = array();
     $form['image'] = array(
